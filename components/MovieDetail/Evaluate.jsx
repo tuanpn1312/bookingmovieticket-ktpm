@@ -8,48 +8,34 @@ import {
   Input,
   Button,
   Rate,
-   message
+  message
 } from "antd";
 import { StarOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { useRecoilState } from "recoil";
 
 import apiService from "../../utils/api/apiService";
-import { comment } from "postcss";
-import { userState } from "../../store/userState";
 const { TextArea } = Input;
 
-export default function Evaluate({ movieDetail }) {
-  const [comments, setComment] = useState([]);
-  const [user, setUser] = useRecoilState(userState);
+export default function Evaluate({ movieDetail, comments, user, getComment }) {
+
 
   const key = 'fetching';
   const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
 
-  const getComment = async () => {
-    const response = await apiService.get(`/ratings/${movieDetail._id}`);
-    setComment(response.data);
-  };
 
   const onAddComment = async (values) => {
     try {
-        message.loading({ content: "Đang cập nhật", key });
-        await apiService.post(`/ratings`, { ...values, movieId: movieDetail._id, account: user, rateDate:moment().format('DD/MM/YYYY')  });
-        getComment();
-        message.success({ content: `Đã thêm bình luận`, key });
+      message.loading({ content: "Đang cập nhật", key });
+      await apiService.post(`/ratings`, { ...values, star: values.star * 2, movieId: movieDetail._id, account: user, rateDate: moment() });
+      getComment();
+      message.success({ content: `Đã thêm bình luận`, key });
     } catch (error) {
-        message.error({ content: "Có lỗi xảy ra", key })
+      message.error({ content: "Có lỗi xảy ra", key })
     }
-}
+  }
 
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
 
-    if (user) {
-      setUser(user);
-    }
-    getComment();
-  }, []);
   return (
     <div>
       <Comment
@@ -59,14 +45,14 @@ export default function Evaluate({ movieDetail }) {
         }
       />
 
-      <Form   onFinish={onAddComment} layout="vertical" className="mx-auto">
+      <Form onFinish={onAddComment} layout="vertical" className="mx-auto">
         <Form.Item
-         name="description">
+          name="description">
           <TextArea rows={4} />
         </Form.Item>
         <Form.Item
-         label="Điểm"
-         name="star">
+          label="Điểm"
+          name="star">
           {/* <InputNumber min="1" max="10" /> */}
           <Rate />
         </Form.Item>
@@ -86,14 +72,13 @@ export default function Evaluate({ movieDetail }) {
                 author={comment.account[0].fullName}
                 avatar={"https://joeschmoe.io/api/v1/random"}
                 content={comment.description}
-                datetime={comment.rateDate}
+                datetime={moment(comment.rateDate).format("DD/MM/YYYY HH:mm")}
               />
-              <div className="">
+              <div className="relative">
                 <StarOutlined
-                  className="absolute hidden"
-                  style={{ color: "Yellow", fontSize: 50 }}
+                  style={{ color: "Yellow", fontSize: 55 }}
                 />
-                <a className="px-5">{comment.star*2}</a>
+                <a className="absolute text-xs transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">{comment.star}/10</a>
               </div>
             </li>
           );

@@ -60,7 +60,7 @@ export default function DefaultLayout({ children }) {
       <Menu.Item key="1">
         <a>Xem hóa đơn</a>
       </Menu.Item>
-      <Menu.Item key="2"  onClick={() => handleRedirect(user)}>
+      <Menu.Item key="2" onClick={() => handleRedirect(user)}>
         <a>Sửa thông tin</a>
       </Menu.Item>
       <Menu.Divider />
@@ -78,7 +78,7 @@ export default function DefaultLayout({ children }) {
                 <a >Movie</a>
               </Link>
             </div>
-            <div className=" flex">
+            {/* <div className=" flex">
               <Input
                 className=" h-auto w-36 rounded-l-xl"
                 placeholder="Tìm kiếm"
@@ -88,9 +88,9 @@ export default function DefaultLayout({ children }) {
                 type="primary"
                 icon={<SearchOutlined style={{ color: "Black", fontSize: 13 }} />}
               />
-            </div>
+            </div> */}
           </div>
-          <Menu
+          {/* <Menu
             className="Menu"
             theme="light"
             mode="horizontal"
@@ -105,7 +105,7 @@ export default function DefaultLayout({ children }) {
             <Menu.Item key="3">
               Tin tức
             </Menu.Item>
-          </Menu>
+          </Menu> */}
           {!isLogin && <div className=" flex space-x-3">
             <Button onClick={() => Router.push('/login')} className="LogIn rounded-full h-9 border-solid border-2 border-light-gray-600">
               Đăng nhập
@@ -132,9 +132,9 @@ export default function DefaultLayout({ children }) {
         </div>
       </Content>
       <Footer>
-        <FooterWeb/>
+        <FooterWeb />
         <div className="pt-20 text-center">
-        ©Trang web của project Movies
+          ©Trang web của project Movies
         </div>
       </Footer>
     </Layout>

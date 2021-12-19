@@ -3,6 +3,8 @@ const { Bill } = require("../models/bill.model");
 const { User } = require("../models/user.model");
 const { Showtime } = require("../models/showtimes.model");
 const { Ticket } = require("../models/ticket.model");
+const { sendMail } = require("../util/email");
+const config = require("../config/email");
 const mongoose = require("mongoose");
 
 module.exports.createBill = async (req, res, next) => {
@@ -84,6 +86,20 @@ module.exports.createBill = async (req, res, next) => {
       age: age,
       phone: phone,
     };
+
+    await sendMail(
+      config.subject,
+      userName,
+      config.title,
+      userName,
+      config.contet,
+      data.cinemaName,
+      data.movieTitle,
+      data.seat,
+      data.room,
+      data.price,
+      data.showTime
+    );
 
     res.status(201).json(data);
   } catch (error) {

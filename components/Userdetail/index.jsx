@@ -21,7 +21,7 @@ import moment from 'moment';
 
 import { userState } from "../../store/userState";
 import { set } from "mongoose";
-
+import numberFormat from '../../utils/modules/numberFormat';
 export default function UserDetail() {
   const [user, setUser] = useRecoilState(userState);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -56,7 +56,7 @@ export default function UserDetail() {
 
       const response = await apiService.post(`/users/update`, values);
       setUser({ ...user, ...values });
-       //Destructuring
+      //Destructuring
       message.success({ content: response.data.message, key });
       setIsModalVisible(false);
     } catch (error) {
@@ -67,7 +67,7 @@ export default function UserDetail() {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-//
+  //
   const showModalPass = () => {
     setIsModalPass(true);
   };
@@ -90,7 +90,7 @@ export default function UserDetail() {
   const handleCancelPass = () => {
     setIsModalPass(false);
   };
-//
+  //
   const [isModalHistory, setIsModalHistory] = useState(false);
 
   const showModalHistory = () => {
@@ -104,48 +104,60 @@ export default function UserDetail() {
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const getBills = async (id= user._id) => {
+  const getBills = async (id = user._id) => {
     try {
       setLoading(true);
-      const response = await apiService.get(`/bills`);
+      const response = await apiService.get(`/bills/findBillById`);
 
       setBills(response.data);
       console.log(response.data);
       setLoading(false);
-  } catch (error) {
+    } catch (error) {
       console.log(error);
-  }
+    }
   }
 
   const columns = [
 
-      {
-          title: 'Phim',
-          dataIndex: 'movieTitle',
-          key: 'movieTitle',
-      },
-      {
-          title: 'Rạp',
-          dataIndex: 'cinemaName',
-          key: 'cinemaName',
-      },
-      {
-          title: 'Phòng',
-          dataIndex: 'room',
-          key: 'room',
-      },
-      {
-          title: 'Thanh toán',
-          dataIndex: 'checkoutDate',
-          key: 'checkoutDate',
-          render: date => <span>{moment(date).format("DD-MM-YYYY HH:ss")}</span>,
-      },
-      {
-          title: 'Số vé',
-          dataIndex: 'seat',
-          key: 'seat',
-          render: seat => <span>{seat.length}</span>
-      },
+    {
+      title: 'Phim',
+      dataIndex: 'movieTitle',
+      key: 'movieTitle',
+    },
+    {
+      title: 'Rạp',
+      dataIndex: 'cinemaName',
+      key: 'cinemaName',
+    },
+    {
+      title: 'Phòng',
+      dataIndex: 'room',
+      key: 'room',
+    },
+    {
+      title: 'Thanh toán',
+      dataIndex: 'checkoutDate',
+      key: 'checkoutDate',
+      render: date => <span>{moment(date).format("DD-MM-YYYY HH:ss")}</span>,
+    },
+    {
+      title: 'Số vé',
+      dataIndex: 'seat',
+      key: 'seat',
+      render: seat => <span>{seat.length}</span>
+    },
+    {
+      title: 'Đơn giá',
+      dataIndex: 'price',
+      key: 'price',
+      render: (price, record) => <span>{numberFormat(price / record.seat.length)} đ</span>
+  },
+  {
+      title: 'Tổng tiền',
+      dataIndex: 'price',
+      key: 'price',
+      render: price => <span>{numberFormat(price)} đ</span>
+  },
 
   ];
 
@@ -319,9 +331,9 @@ export default function UserDetail() {
         </Form>
       </Modal>
       <Modal title="Lịch sử đặt vé" visible={isModalHistory} onCancel={handleCancelHistory} footer={null} width={1000}>
-      
-            <Table loading={loading} columns={columns} dataSource={bills} />
-       
+
+        <Table loading={loading} columns={columns} dataSource={bills} />
+
       </Modal>
     </DefaultLayout>
   );

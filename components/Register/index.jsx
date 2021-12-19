@@ -47,8 +47,9 @@ export default function Register() {
                     name="userName"
                     rules={[
                         {
+                            type: 'email',
                             required: true,
-                            message: 'Tên đăng nhập không được để trống!',
+                            message: 'Tên đăng nhập không được để trống!(có @gmail.com ở cuối)',
                         },
                     ]}
                 >
